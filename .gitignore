@@ -1,1 +1,5 @@
 source
+mirador/data.tsv
+mirador/dictionary.tsv
+mirador/groups.xml
+mirador/data.bin
