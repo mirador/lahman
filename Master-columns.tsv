@@ -9,5 +9,5 @@
 17	nameLast	Player's last name	label:2
 21	weight	Player's weight in pounds	int
 22	height	Player's height in inches	int
-23	bats	Player's batting hand (left, right, or both)	category
-24	throws	Player's throwing hand (left or right)	category
+23	bats	Player's batting hand	category
+24	throws	Player's throwing hand	category

@@ -263,7 +263,7 @@ all_titles.extend(pitching_titles)
 print "Creating dictionary file..."
 
 # Initialize ranges
-all_ranges = {}
+all_ranges = [None] * len(all_names)
 
 # Get team names
 team_names = {}
@@ -272,16 +272,30 @@ reader.next()
 for row in reader:
     team_names[row[2]] = row[40]
 
+hand = {'L':'Left', 'R':'Right', 'B':'Both'}
+
 for i in range(0, len(all_names)):
     name = all_names[i]
+    title = all_titles[i]
     if name == 'teamID':
-        all_ranges[name] = team_names    
+        range_str = ''
+        for key in team_names:
+            if not range_str == '': range_str = range_str + ';'
+            range_str = range_str + key + ':' + team_names[key]
+        all_ranges[i] = range_str
     elif all_types[i] == 'category':
         values = {}
         for row in all_data:
             if row[i] == '\\N': continue
-            values[row[i]] = row[i]
-        all_ranges[name] = values                
+            if 'throwing hand' in title or 'batting hand' in title:
+                values[row[i]] = hand[row[i]]
+            else:
+                values[row[i]] = row[i]
+        range_str = ''            
+        for key in values:
+            if not range_str == '': range_str = range_str + ';'
+            range_str = range_str + key + ':' + values[key]            
+        all_ranges[i] = range_str
     elif all_types[i] == 'int':
         minVal = 1E9
         maxVal = 0
@@ -290,9 +304,9 @@ for i in range(0, len(all_names)):
             val = int(row[i])
             if val < minVal: minVal = val
             if maxVal < val: maxVal = val
-        all_ranges[name] = [minVal, maxVal]
+        all_ranges[i] = str(minVal) + ',' + str(maxVal)
         if maxVal < minVal:
-            all_ranges[name] = [0, 0]
+            all_ranges[i] = '0,0'
             print "  Warning: no values found for " + name        
     elif all_types[i] == 'float':
         minVal = 1E9
@@ -302,14 +316,22 @@ for i in range(0, len(all_names)):
             val = float(row[i])
             if val < minVal: minVal = val
             if maxVal < val: maxVal = val
-        all_ranges[name] = [minVal, maxVal]        
+        all_ranges[i] = str(minVal) + ',' + str(maxVal)
         if maxVal < minVal:
-            all_ranges[name] = [0, 0] 
+            all_ranges[i] = '0,0'
             print "  Warning: no values found for " + name
     elif 'label' in all_types[i]:
-        all_ranges[name] = all_types[i]    
+        all_ranges[i] = all_types[i]    
         all_types[i] = 'String'
           
+dfile = open(output_folder + 'dictionary.tsv', 'w')
+for i in range(0, len(all_names)):
+    line = all_titles[i] + '\t' + all_types[i] + '\t' + all_ranges[i] + '\n'
+    dfile.write(line)  
+dfile.close()
+print "Done."
+
+
           
           
 #all_ranges['lgID'] = {}
