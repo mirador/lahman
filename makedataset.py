@@ -17,7 +17,7 @@ def write_xml_line(line):
 
 #http://seanlahman.com/files/database/lahman-csv_2014-02-14.zip
 
-source_folder = 'source/test/'
+source_folder = 'source/2012/'
 output_folder = 'mirador/'
 
 master_data = []
@@ -187,10 +187,11 @@ for row in master_data:
         
         writer.writerow(all_row)
         all_data.append(all_row)
+        print str(count) + '/' + str(num_players)
         
-    perc = int(100 * count / num_players)      
-    if perc % 10 == 0:
-        print "  " + str(perc) + "% completed"
+#     perc = int(100 * count / num_players)      
+#     if perc % 10 == 0:
+#         print "  " + str(perc) + "% completed"
 print "Done."        
 
 # Remove binary file, just in case
