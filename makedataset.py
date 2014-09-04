@@ -183,7 +183,7 @@ for row in master_data:
         all_row.insert(len(master_columns), year)
         all_row.insert(len(master_columns) + 1, stint)
         all_row.insert(len(master_columns) + 2, team)        
-        all_row.insert(len(master_columns) + 2, league)
+        all_row.insert(len(master_columns) + 3, league)
         
         writer.writerow(all_row)
         all_data.append(all_row)
