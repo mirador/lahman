@@ -1,0 +1,13 @@
+5	FL_Pos	Position
+6	FL_G	Games as Fielder
+7	FL_GS	Games Started as Fielder
+8	FL_InnOuts	Time played in the field expressed as outs 
+9	FL_PO	Putouts
+10	FL_A	Assists
+11	FL_E	Errors
+12	FL_DP	Double Plays
+13	FL_PB	Passed Balls (by catchers)
+14	FL_WP	Wild Pitches (by catchers)
+15	FL_SB	Opponent Stolen Bases (by catchers)
+16	FL_CS	Opponents Caught Stealing (by catchers)
+17	FL_ZR	Zone Rating

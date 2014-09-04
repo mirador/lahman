@@ -1,0 +1,25 @@
+5	PT_W	Wins
+6	PT_L	Losses
+7	PT_G	Games as Pitcher
+8	PT_GS	Games Started as Pitcher
+9	PT_CG	Complete Games as Pitcher
+10	PT_SHO	Shutouts
+11	PT_SV	Saves
+12	PT_IPOuts	Outs Pitched (innings pitched x 3)
+13	PT_H	Hits
+14	PT_ER	Earned Runs
+15	PT_HR	Homeruns
+16	PT_BB	Walks
+17	PT_SO	Strikeouts
+18	PT_BAOpp	Opponent's Batting Average
+19	PT_ERA	Earned Run Average
+20	PT_IBB	Intentional Walks
+21	PT_WP	Wild Pitches
+22	PT_HBP	Batters Hit By Pitch
+23	PT_BK	Balks
+24	PT_BFP	Batters faced by Pitcher
+25	PT_GF	Games Finished
+26	PT_R	Runs Allowed
+27	PT_SH	Sacrifices by opposing batters
+28	PT_SF	Sacrifice flies by opposing batters
+29	PT_GIDP	Grounded into double plays by opposing batter

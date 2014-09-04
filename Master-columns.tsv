@@ -1,0 +1,22 @@
+0	lahmanID	Lahman ID
+1	playerID	Player ID
+4	birthYear	Year player was born
+5	birthMonth	Month player was born
+6	birthDay	Day player was born
+7	birthCountry	Country where player was born
+8	birthState	State where player was born
+9	birthCity	City where player was born
+10	deathYear	Year player died
+11	deathMonth	Month player died
+12	deathDay	Day player died
+13	deathCountry	Country where player died
+14	deathState	State where player died
+15	deathCity	City where player died
+16	nameFirst	Player's first name
+17	nameLast	Player's last name
+20	nameNick	Player's nickname
+21	weight	Player's weight in pounds
+22	height	Player's height in inches
+23	bats	Player's batting hand (left, right, or both)         
+24	throws	Player's throwing hand (left or right)
+27	college	College attended

@@ -1,0 +1,17 @@
+6	BT_G_batting	Game as Batter
+7	BT_AB	At Bats
+8	BT_R	Runs
+9	BT_H	Hits
+10	BT_2B	Doubles
+11	BT_3B	Triples
+12	BT_HR	Homeruns
+13	BT_RBI	Runs Batted In
+14	BT_SB	Stolen Bases
+15	BT_CS	Caught Stealing
+16	BT_BB	Base on Balls
+17	BT_SO	Strikeouts
+18	BT_IBB	Intentional walks
+19	BT_HBP	Hit by pitch
+20	BT_SH	Sacrifice hits
+21	BT_SF	Sacrifice flies
+22	BT_GIDP	Grounded into double plays
