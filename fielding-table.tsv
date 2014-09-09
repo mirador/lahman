@@ -1,0 +1,18 @@
+playerID	Player ID code
+yearID	Year
+stint	player's stint (order of appearances within a season)
+teamID	Team
+lgID	League
+Pos	Position	category
+G	Games	int
+GS	Games Started	int
+InnOuts	Time played in the field expressed as outs	int
+PO	Putouts	int
+A	Assists	int
+E	Errors	int
+DP	Double Plays	int
+PB	Passed Balls (by catchers)	int
+WP	Wild Pitches (by catchers)	int
+SB	Opponent Stolen Bases (by catchers)	int
+CS	Opponents Caught Stealing (by catchers)	int
+ZR	Zone Rating	int

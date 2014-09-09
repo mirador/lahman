@@ -1,0 +1,30 @@
+playerID	Player ID code
+yearID	Year
+stint	player's stint (order of appearances within a season)
+teamID	Team
+lgID	League
+W	Wins	int
+L	Losses	int
+G	Games	int
+GS	Games Started	int
+CG	Complete Games	int
+SHO	Shutouts	int
+SV	Saves	int
+IPOuts	Outs Pitched (innings pitched x 3)	int
+H	Hits	int
+ER	Earned Runs	int
+HR	Homeruns	int
+BB	Walks	int
+SO	Strikeouts	int
+BAOpp	Opponent's Batting Average	float
+ERA	Earned Run Average	float
+IBB	Intentional Walks	int
+WP	Wild Pitches	int
+HBP	Batters Hit By Pitch	int
+BK	Balks	int
+BFP	Batters faced by Pitcher	int
+GF	Games Finished	int
+R	Runs Allowed	int
+SH	Sacrifices by opposing batters	int
+SF	Sacrifice flies by opposing batters	int
+GIDP	Grounded into double plays by opposing batter	int

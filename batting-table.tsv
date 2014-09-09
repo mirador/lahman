@@ -1,0 +1,24 @@
+playerID	Player ID code
+yearID	Year
+stint	player's stint (order of appearances within a season)
+teamID	Team
+lgID	League
+G	Games
+G_batting	Game as batter	int
+AB	At Bats	int
+R	Runs	int
+H	Hits	int
+2B	Doubles	int
+3B	Triples	int
+HR	Homeruns	int
+RBI	Runs Batted In	int
+SB	Stolen Bases	int
+CS	Caught Stealing	int
+BB	Base on Balls	int
+SO	Strikeouts	int
+IBB	Intentional walks	int
+HBP	Hit by pitch	int
+SH	Sacrifice hits	int
+SF	Sacrifice flies	int
+GIDP	Grounded into double plays	int
+G_Old	Old version of games (deprecated)
