@@ -75,20 +75,33 @@ def read_table(data_file, table_file, data, columns, names, titles, types, idcol
         col = col + 1
 
 def read_team_names(data_file):
-    # Read team names
-    team_names = {}
     reader = csv.reader(open(data_file, 'r'), dialect='excel')
     reader.next()
     for row in reader:
         team_names[row[2]] = row[40]
     
-def read_salaries(data_file):
+def read_salaries(data_file, cpi_file):
+    cpi = {}
+    reader = csv.reader(open(cpi_file, 'r'), dialect='excel-tab')
+    for row in reader:
+        cpi[row[0]] = float(row[1])
+        
+    no_cpi_warning = False    
     reader = csv.reader(open(data_file, 'r'), dialect='excel')
     reader.next()
     for row in reader:
         id = row[3]
         year = row[0]
-        salary = float(row[4]) * 19.2
+        # Salary in constant dollars:
+        # http://www.uri.edu/artsci/newecn/Classes/Art/306a/Outlines/BasicQuest/inflation_adjustments.htm
+        if year in cpi:
+            salary = 100 * float(row[4]) / cpi[year]
+        else:
+            if not no_cpi_warning:
+                no_cpi_warning = True
+                print '  Warning: year ' + year + ' does not have Consumer Price Index, please update provided cpi.tsv file!'
+            salary = float(row[4])
+            
         if id in salary_data:
             sdat = salary_data[id]
         else:
@@ -186,11 +199,12 @@ def write_data(filename):
             if year in yearly_salary_data:
                 salary = yearly_salary_data[year]
 
-            all_row.insert(len(master_columns), year)
-            all_row.insert(len(master_columns) + 1, stint)
-            all_row.insert(len(master_columns) + 2, team)        
-            all_row.insert(len(master_columns) + 3, league)
-            all_row.insert(len(master_columns) + 4, salary)            
+            all_row.insert(len(master_columns) + 0, pid)
+            all_row.insert(len(master_columns) + 1, year)
+            all_row.insert(len(master_columns) + 2, stint)
+            all_row.insert(len(master_columns) + 3, team)        
+            all_row.insert(len(master_columns) + 4, league)
+            all_row.insert(len(master_columns) + 5, salary)            
             
             writer.writerow(all_row)
             all_data.append(all_row)
@@ -211,11 +225,11 @@ def write_groups(filename):
     write_xml_line('<data>', xml_file, xml_strings)
     write_xml_line(' <group name="Player info">', xml_file, xml_strings)
     write_xml_line('  <table name="Vitals">', xml_file, xml_strings)
-    for name in master_names[0: len(master_names) - 5]:    
+    for name in master_names[0: len(master_names) - num_team_vars]:    
         write_xml_line('   <variable name="' + name + '"/>', xml_file, xml_strings)
     write_xml_line('  </table>', xml_file, xml_strings)
     write_xml_line('  <table name="Teams">', xml_file, xml_strings)
-    for name in master_names[len(master_names) - 5: len(master_names)]:
+    for name in master_names[len(master_names) - num_team_vars: len(master_names)]:
         write_xml_line('   <variable name="' + name + '"/>', xml_file, xml_strings)
     write_xml_line('  </table>', xml_file, xml_strings)
     write_xml_line(' </group>', xml_file, xml_strings)
@@ -309,7 +323,7 @@ def write_dict(dict_file):
             if maxVal < minVal:
                 all_ranges[i] = '0,0'
                 print "  Warning: no values found for " + name
-        elif 'label' in all_types[i]:
+        elif 'String' in all_types[i]:
             all_ranges[i] = all_types[i]    
             all_types[i] = 'String'
           
@@ -357,9 +371,10 @@ init_dataset(output_folder)
 print 'Reading master table...'
 read_master(source_folder + 'Master.csv', 'master-table.tsv', master_data, master_columns, master_names, master_titles, master_types) 
 print 'Done.'
-master_names.extend(['yearID', 'stint', 'teamID', 'lgID', 'salary']);
-master_titles.extend(['Year', "player's stint", 'Team', 'League', 'Salary']);
-master_types.extend(['int', 'int', 'category', 'category', 'float']);
+num_team_vars = 6
+master_names.extend(['playerID', 'yearID', 'stint', 'teamID', 'lgID', 'salary']);
+master_titles.extend(['Player ID', 'Year', 'Player\'s stint', 'Team', 'League', 'Salary']);
+master_types.extend(['String', 'int', 'int', 'category', 'category', 'float']);
 
 print 'Reading batting table...'
 read_table(source_folder + 'Batting.csv', 'batting-table.tsv', batting_data, batting_columns, batting_names, batting_titles, batting_types, 0, 'BAT.')    
@@ -378,7 +393,7 @@ read_team_names(source_folder + 'Teams.csv')
 print 'Done.'
 
 print 'Reading salaries...'
-read_salaries(source_folder + 'Salaries.csv')
+read_salaries(source_folder + 'Salaries.csv', 'cpi.tsv')
 print 'Done.'
 
 all_data = []
