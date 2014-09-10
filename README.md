@@ -86,7 +86,12 @@ retroID	ID used by retrosheet
 bbrefID	ID used by Baseball Reference website
 ```
 
-**3)** Run the makedataset.py script, indicating the release year:
+**3)** The script uses yearly Consumer Price Index (CPI) values to normalize the player 
+salaries to [constant dollars](http://www.uri.edu/artsci/newecn/Classes/Art/306a/Outlines/BasicQuest/inflation_adjustments.htm). 
+The CPI values are provided in the file cpi.tsv up to 2014 (taken from [here](http://www.multpl.com/cpi/table)). 
+Edit this file to add new values.
+
+**4)** Run the makedataset.py script, indicating the release year:
 
 ```bash
 python makedataset.py 2013
