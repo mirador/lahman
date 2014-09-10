@@ -86,8 +86,15 @@ def read_salaries(data_file):
     reader = csv.reader(open(data_file, 'r'), dialect='excel')
     reader.next()
     for row in reader:
-        row[4] = str(float(row[4]) * 19.2)
-        salary_data.append(row)
+        id = row[3]
+        year = row[0]
+        salary = float(row[4]) * 19.2
+        if id in salary_data:
+            sdat = salary_data[id]
+        else:
+            sdat = []
+            salary_data[id] = sdat
+        sdat.append([year, str(salary)])
  
 def write_data(filename):
     writer = csv.writer(open(filename, 'w'), dialect='excel-tab')    
@@ -100,6 +107,7 @@ def write_data(filename):
         pid = mrow[0]
     
         years_active = Set([])
+        yearly_salary_data = {}
         yearly_batting_data = {}
         yearly_fielding_data = {}    
         yearly_pitching_data = {} 
@@ -124,6 +132,12 @@ def write_data(filename):
                 year = frow[1]
                 yearly_fielding_data[year] = [val if val != '' else '\\N' for val in frow]
                 years_active.add(year)            
+
+        if pid in salary_data:
+            srows = salary_data[pid]
+            for srow in srows:
+                year = srow[0]
+                yearly_salary_data[year] = srow[1]
             
         count = count + 1
         years_active = sorted(years_active, key=lambda item: (int(item), item))
@@ -169,8 +183,8 @@ def write_data(filename):
             else:
                 all_row.extend(['\\N'] * len(fielding_columns))
 
-#             if year in yearly_batting_data: 
-                
+            if year in yearly_salary_data:
+                salary = yearly_salary_data[year]
 
             all_row.insert(len(master_columns), year)
             all_row.insert(len(master_columns) + 1, stint)
@@ -336,7 +350,7 @@ fielding_titles = []
 fielding_types = []
 
 team_names = {}
-salary_data = []
+salary_data = {}
 
 init_dataset(output_folder)
 
