@@ -1,0 +1,17 @@
+playerID	Player ID code
+yearID	Year
+teamID	Team
+lgID	League
+round	Level of playoffs 
+Pos	Position	category
+G 	Games	int
+GS	Games Started	int
+InnOuts	Time played in the field expressed as outs	int
+PO	Putouts	int
+A	Assists	int
+E	Errors	int
+DP	Double Plays	int
+TP	Triple Plays	int
+PB	Passed Balls	int
+SB	Stolen Bases allowed (by catcher)	int
+CS	Caught Stealing (by catcher)	int

@@ -1,0 +1,30 @@
+playerID	Player ID code
+yearID	Year
+round	Level of playoffs 
+teamID	Team
+lgID	League
+W	Wins	int
+L	Losses	int
+G	Games	int
+GS	Games Started	int
+CG	Complete Games	int
+SHO	Shutouts	int
+SV	Saves	int
+IPOuts	Outs Pitched (innings pitched x 3)	int
+H	Hits	int
+ER	Earned Runs	int
+HR	Homeruns	int
+BB	Walks	int
+SO	Strikeouts	int
+BAOpp	Opponents' batting average	float
+ERA	Earned Run Average	float
+IBB	Intentional Walks	int
+WP	Wild Pitches	int
+HBP	Batters Hit By Pitch	int
+BK	Balks	int
+BFP	Batters faced by Pitcher	int
+GF	Games Finished	int
+R	Runs Allowed	int
+SH	Sacrifice Hits allowed	int
+SF	Sacrifice Flies allowed	int
+GIDP	Grounded into Double Plays	int

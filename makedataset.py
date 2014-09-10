@@ -117,12 +117,13 @@ def add_yearly_data(pid, all_data, yearly_data, years_active, year_col):
             yearly_data[year] = [val if val != '' else '\\N' for val in row]
             years_active.add(year)
  
-def add_row_data(year, yearly_data, columns, all_row, team_data, st_col, tm_col, lg_col):
+def add_row_data(year, yearly_data, columns, all_row, team_data, lg_col, tm_col, st_col, rn_col):
     if year in yearly_data: 
         row = yearly_data[year]
-        team_data[0] = row[st_col] # sting
-        team_data[1] = row[tm_col] # team
-        team_data[2] = row[lg_col] # league
+        if -1 < lg_col: team_data[0] = row[lg_col] # league        
+        if -1 < tm_col: team_data[1] = row[tm_col] # team
+        if -1 < st_col: team_data[2] = row[st_col] # stint
+        if -1 < rn_col: team_data[3] = row[rn_col] # round
         for col in columns:
             all_row.append(row[col])
     else:
@@ -142,7 +143,10 @@ def write_data(filename):
         yearly_salary_data = {}
         yearly_batting_data = {}
         yearly_fielding_data = {}    
-        yearly_pitching_data = {} 
+        yearly_pitching_data = {}
+        yearly_batting_post_data = {}
+        yearly_fielding_post_data = {}    
+        yearly_pitching_post_data = {}
 
         if pid in salary_data:
             srows = salary_data[pid]
@@ -154,6 +158,10 @@ def write_data(filename):
         add_yearly_data(pid, pitching_data, yearly_pitching_data, years_active, 1)            
         add_yearly_data(pid, fielding_data, yearly_fielding_data, years_active, 1)
 
+        add_yearly_data(pid, batting_post_data, yearly_batting_post_data, years_active, 0)
+        add_yearly_data(pid, pitching_post_data, yearly_pitching_post_data, years_active, 1)            
+        add_yearly_data(pid, fielding_post_data, yearly_fielding_post_data, years_active, 1)
+        
         count = count + 1
         years_active = sorted(years_active, key=lambda item: (int(item), item))
         
@@ -163,24 +171,29 @@ def write_data(filename):
             for col in master_columns:
                 all_row.append(mrow[col])
 
-            # stint, team, league                    
-            team_data = ['\\N', '\\N', '\\N']
+            # league, team, stint, round
+            team_data = ['\\N', '\\N', '\\N', '\\N']
 
             if year in yearly_salary_data:
                 salary = yearly_salary_data[year]            
             else:
                 salary = '\\N'
                 
-            add_row_data(year, yearly_batting_data, batting_columns, all_row, team_data, 2, 3, 4)
-            add_row_data(year, yearly_pitching_data, pitching_columns, all_row, team_data, 2, 3, 4)
-            add_row_data(year, yearly_fielding_data, fielding_columns, all_row, team_data, 2, 3, 4)
+            add_row_data(year, yearly_batting_data, batting_columns, all_row, team_data, 4, 3, 2, -1)
+            add_row_data(year, yearly_pitching_data, pitching_columns, all_row, team_data, 4, 3, 2, -1)
+            add_row_data(year, yearly_fielding_data, fielding_columns, all_row, team_data, 4, 3, 2, -1)
+
+            add_row_data(year, yearly_batting_post_data, batting_post_columns, all_row, team_data, -1, -1, -1, 1)
+            add_row_data(year, yearly_pitching_post_data, pitching_post_columns, all_row, team_data, -1, -1, -1, 2)
+            add_row_data(year, yearly_fielding_post_data, fielding_post_columns, all_row, team_data, -1, -1, -1, 4)
 
             all_row.insert(len(master_columns) + 0, pid)
             all_row.insert(len(master_columns) + 1, year)
             all_row.insert(len(master_columns) + 2, team_data[0])
             all_row.insert(len(master_columns) + 3, team_data[1])        
             all_row.insert(len(master_columns) + 4, team_data[2])
-            all_row.insert(len(master_columns) + 5, salary)            
+            all_row.insert(len(master_columns) + 5, team_data[3])            
+            all_row.insert(len(master_columns) + 6, salary)            
             
             writer.writerow(all_row)
             all_data.append(all_row)
@@ -199,18 +212,19 @@ def write_groups(filename):
     write_xml_line('<?xml version="1.0"?>', xml_file, xml_strings)
 
     write_xml_line('<data>', xml_file, xml_strings)
+    
     write_xml_line(' <group name="Player info">', xml_file, xml_strings)
     write_xml_line('  <table name="Vitals">', xml_file, xml_strings)
     for name in master_names[0: len(master_names) - num_team_vars]:    
         write_xml_line('   <variable name="' + name + '"/>', xml_file, xml_strings)
     write_xml_line('  </table>', xml_file, xml_strings)
-    write_xml_line('  <table name="Teams">', xml_file, xml_strings)
+    write_xml_line('  <table name="Team info">', xml_file, xml_strings)
     for name in master_names[len(master_names) - num_team_vars: len(master_names)]:
         write_xml_line('   <variable name="' + name + '"/>', xml_file, xml_strings)
     write_xml_line('  </table>', xml_file, xml_strings)
     write_xml_line(' </group>', xml_file, xml_strings)
 
-    write_xml_line(' <group name="Player stats">', xml_file, xml_strings)
+    write_xml_line(' <group name="Season stats">', xml_file, xml_strings)
     write_xml_line('  <table name="Batting">', xml_file, xml_strings)
     for name in batting_names:
         write_xml_line('   <variable name="' + name + '"/>', xml_file, xml_strings)
@@ -224,6 +238,22 @@ def write_groups(filename):
         write_xml_line('   <variable name="' + name + '"/>', xml_file, xml_strings)
     write_xml_line('  </table>', xml_file, xml_strings)
     write_xml_line(' </group>', xml_file, xml_strings)
+    
+    write_xml_line(' <group name="Post-season stats">', xml_file, xml_strings)
+    write_xml_line('  <table name="Batting Post">', xml_file, xml_strings)
+    for name in batting_post_names:
+        write_xml_line('   <variable name="' + name + '"/>', xml_file, xml_strings)
+    write_xml_line('  </table>', xml_file, xml_strings)
+    write_xml_line('  <table name="Pitching Post">', xml_file, xml_strings)
+    for name in pitching_post_names:
+        write_xml_line('   <variable name="' + name + '"/>', xml_file, xml_strings)
+    write_xml_line('  </table>', xml_file, xml_strings)    
+    write_xml_line('  <table name="Fielding Post">', xml_file, xml_strings)
+    for name in fielding_post_names:
+        write_xml_line('   <variable name="' + name + '"/>', xml_file, xml_strings)
+    write_xml_line('  </table>', xml_file, xml_strings)
+    write_xml_line(' </group>', xml_file, xml_strings)
+
     write_xml_line('</data>', xml_file, xml_strings)
     xml_file.close()
 
@@ -240,14 +270,20 @@ def write_dict(dict_file):
     all_types.extend(master_types)
     all_types.extend(batting_types)
     all_types.extend(pitching_types)
-    all_types.extend(fielding_types)    
+    all_types.extend(fielding_types)
+    all_types.extend(batting_post_types)
+    all_types.extend(pitching_post_types)
+    all_types.extend(fielding_post_types)
 
     all_titles = []
     all_titles.extend(master_titles)
     all_titles.extend(batting_titles)
     all_titles.extend(pitching_titles)
-    all_titles.extend(fielding_titles)    
-
+    all_titles.extend(fielding_titles)
+    all_titles.extend(batting_post_titles)
+    all_titles.extend(pitching_post_titles)
+    all_titles.extend(fielding_post_titles)
+    
     # Initialize ranges
     all_ranges = [None] * len(all_names)
 
@@ -339,6 +375,24 @@ fielding_names = []
 fielding_titles = []
 fielding_types = []
 
+batting_post_data = {}
+batting_post_columns = []
+batting_post_names = []
+batting_post_titles = []
+batting_post_types = []
+
+pitching_post_data = {}
+pitching_post_columns = []
+pitching_post_names = []
+pitching_post_titles = []
+pitching_post_types = []
+
+fielding_post_data = {}
+fielding_post_columns = []
+fielding_post_names = []
+fielding_post_titles = []
+fielding_post_types = []
+
 team_names = {}
 salary_data = {}
 
@@ -347,10 +401,10 @@ init_dataset(output_folder)
 print 'Reading master table...'
 read_master(source_folder + 'Master.csv', 'master-table.tsv', master_data, master_columns, master_names, master_titles, master_types) 
 print 'Done.'
-num_team_vars = 6
-master_names.extend(['playerID', 'yearID', 'stint', 'teamID', 'lgID', 'salary']);
-master_titles.extend(['Player ID', 'Year', 'Player\'s stint', 'Team', 'League', 'Salary']);
-master_types.extend(['String', 'int', 'int', 'category', 'category', 'float']);
+num_team_vars = 7
+master_names.extend(['playerID', 'yearID', 'lgID', 'teamID', 'stint', 'round', 'salary']);
+master_titles.extend(['Player ID', 'Year', 'League', 'Team', 'Player\'s stint', 'Level of playoffs', 'Salary']);
+master_types.extend(['String', 'int', 'category', 'category', 'int', 'category', 'float']);
 
 print 'Reading batting table...'
 read_table(source_folder + 'Batting.csv', 'batting-table.tsv', batting_data, batting_columns, batting_names, batting_titles, batting_types, 0, 'BAT.')    
@@ -362,6 +416,18 @@ print 'Done.'
 
 print 'Reading fielding table...'
 read_table(source_folder + 'Fielding.csv', 'fielding-table.tsv', fielding_data, fielding_columns, fielding_names, fielding_titles, fielding_types, 0, 'FIELD.')
+print 'Done.'
+
+print 'Reading battingPost table...'
+read_table(source_folder + 'BattingPost.csv', 'battingpost-table.tsv', batting_post_data, batting_post_columns, batting_post_names, batting_post_titles, batting_post_types, 2, 'BAT_POST.')    
+print 'Done.'
+
+print 'Reading pitchingPost table...'
+read_table(source_folder + 'PitchingPost.csv', 'pitchingpost-table.tsv', pitching_post_data, pitching_post_columns, pitching_post_names, pitching_post_titles, pitching_post_types, 0, 'PITCH_POST.')
+print 'Done.'
+
+print 'Reading fieldingPost table...'
+read_table(source_folder + 'FieldingPost.csv', 'fieldingpost-table.tsv', fielding_post_data, fielding_post_columns, fielding_post_names, fielding_post_titles, fielding_post_types, 0, 'FIELD_POST.')
 print 'Done.'
 
 print 'Reading team names...'
@@ -378,6 +444,9 @@ all_names.extend(master_names)
 all_names.extend(batting_names)
 all_names.extend(pitching_names)
 all_names.extend(fielding_names)
+all_names.extend(batting_post_names)
+all_names.extend(pitching_post_names)
+all_names.extend(fielding_post_names)
 
 print 'BUILDING MIRADOR DATASET...'
 print '  Writing data file...'
