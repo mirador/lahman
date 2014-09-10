@@ -109,6 +109,25 @@ def read_salaries(data_file, cpi_file):
             salary_data[id] = sdat
         sdat.append([year, str(salary)])
  
+def add_yearly_data(pid, all_data, yearly_data, years_active, year_col):
+    if pid in all_data:
+        rows = all_data[pid]
+        for row in rows:
+            year = row[year_col]
+            yearly_data[year] = [val if val != '' else '\\N' for val in row]
+            years_active.add(year)
+ 
+def add_row_data(year, yearly_data, columns, all_row, team_data, st_col, tm_col, lg_col):
+    if year in yearly_data: 
+        row = yearly_data[year]
+        team_data[0] = row[st_col] # sting
+        team_data[1] = row[tm_col] # team
+        team_data[2] = row[lg_col] # league
+        for col in columns:
+            all_row.append(row[col])
+    else:
+        all_row.extend(['\\N'] * len(columns))
+ 
 def write_data(filename):
     writer = csv.writer(open(filename, 'w'), dialect='excel-tab')    
     writer.writerow(all_names)
@@ -124,34 +143,17 @@ def write_data(filename):
         yearly_batting_data = {}
         yearly_fielding_data = {}    
         yearly_pitching_data = {} 
-    
-        if pid in batting_data:        
-            brows = batting_data[pid]
-            for brow in brows:
-                year = brow[1]
-                yearly_batting_data[year] = [val if val != '' else '\\N' for val in brow]
-                years_active.add(year)
-            
-        if pid in pitching_data:        
-            prows = pitching_data[pid]
-            for prow in prows: 
-                year = prow[1]
-                yearly_pitching_data[year] = [val if val != '' else '\\N' for val in prow]
-                years_active.add(year)
-            
-        if pid in fielding_data:        
-            frows = fielding_data[pid]
-            for frow in frows:
-                year = frow[1]
-                yearly_fielding_data[year] = [val if val != '' else '\\N' for val in frow]
-                years_active.add(year)            
 
         if pid in salary_data:
             srows = salary_data[pid]
             for srow in srows:
                 year = srow[0]
                 yearly_salary_data[year] = srow[1]
-            
+    
+        add_yearly_data(pid, batting_data, yearly_batting_data, years_active, 1)
+        add_yearly_data(pid, pitching_data, yearly_pitching_data, years_active, 1)            
+        add_yearly_data(pid, fielding_data, yearly_fielding_data, years_active, 1)
+
         count = count + 1
         years_active = sorted(years_active, key=lambda item: (int(item), item))
         
@@ -160,50 +162,24 @@ def write_data(filename):
         
             for col in master_columns:
                 all_row.append(mrow[col])
-                    
-            stint = '\\N'
-            team = '\\N'        
-            league = '\\N'
-            salary = '\\N'
-                                    
-            if year in yearly_batting_data: 
-                brow = yearly_batting_data[year]
-                stint = brow[2]
-                team = brow[3]
-                league = brow[4]
-                for col in batting_columns:
-                    all_row.append(brow[col])
-            else:
-                all_row.extend(['\\N'] * len(batting_columns))
 
-            if year in yearly_pitching_data: 
-                prow = yearly_pitching_data[year]
-                stint = prow[2]
-                team = prow[3]
-                league = prow[4]
-                for col in pitching_columns:
-                    all_row.append(prow[col])
-            else:
-                all_row.extend(['\\N'] * len(pitching_columns))
-            
-            if year in yearly_fielding_data: 
-                frow = yearly_fielding_data[year]            
-                stint = frow[2]
-                team = frow[3]
-                league = frow[4]
-                for col in fielding_columns:
-                    all_row.append(frow[col])
-            else:
-                all_row.extend(['\\N'] * len(fielding_columns))
+            # stint, team, league                    
+            team_data = ['\\N', '\\N', '\\N']
 
             if year in yearly_salary_data:
-                salary = yearly_salary_data[year]
+                salary = yearly_salary_data[year]            
+            else:
+                salary = '\\N'
+                
+            add_row_data(year, yearly_batting_data, batting_columns, all_row, team_data, 2, 3, 4)
+            add_row_data(year, yearly_pitching_data, pitching_columns, all_row, team_data, 2, 3, 4)
+            add_row_data(year, yearly_fielding_data, fielding_columns, all_row, team_data, 2, 3, 4)
 
             all_row.insert(len(master_columns) + 0, pid)
             all_row.insert(len(master_columns) + 1, year)
-            all_row.insert(len(master_columns) + 2, stint)
-            all_row.insert(len(master_columns) + 3, team)        
-            all_row.insert(len(master_columns) + 4, league)
+            all_row.insert(len(master_columns) + 2, team_data[0])
+            all_row.insert(len(master_columns) + 3, team_data[1])        
+            all_row.insert(len(master_columns) + 4, team_data[2])
             all_row.insert(len(master_columns) + 5, salary)            
             
             writer.writerow(all_row)
