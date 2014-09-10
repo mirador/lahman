@@ -58,6 +58,7 @@ def write_data(filename):
     writer.writerow(all_names)
     num_players = len(master_data)
     count = 0
+    lastPercPoint = 0
     for row in master_data:
         mrow = [val if val != '' else '\\N' for val in row]
         cid = mrow[0]
@@ -132,9 +133,14 @@ def write_data(filename):
             all_row.insert(len(master_columns) + 1, stint)
             all_row.insert(len(master_columns) + 2, team)        
             all_row.insert(len(master_columns) + 3, league)
-        
+            
             writer.writerow(all_row)
             all_data.append(all_row)
+
+        perc = int(100 * count / num_players)
+        if lastPercPoint < perc:
+            print '  Completed ' + str(perc) + '%...'
+            lastPercPoint = perc
 
 def write_groups(filename):
     # Writing file in utf-8 because the input html files from
