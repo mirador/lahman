@@ -5,14 +5,14 @@ birthDay	Day player was born	int
 birthCountry	Country where player was born	category
 birthState	State where player was born	category
 birthCity	City where player was born	category
-deathYear	Year player died
-deathMonth	Month player died
-deathDay	Day player died
-deathCountry	Country where player died
-deathState	State where player died
-deathCity	City where player died
-nameFirst	Player's first name
-nameLast	Player's last name
+deathYear	Year player died	int
+deathMonth	Month player died	int
+deathDay	Day player died	int
+deathCountry	Country where player died	category
+deathState	State where player died	category
+deathCity	City where player died	category
+nameFirst	Player's first name	String
+nameLast	Player's last name	String
 nameGiven	Player's given name (typically first and middle)
 weight	Player's weight in pounds	int
 height	Player's height in inches	int

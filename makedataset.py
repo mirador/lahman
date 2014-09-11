@@ -213,12 +213,12 @@ def write_groups(filename):
 
     write_xml_line('<data>', xml_file, xml_strings)
     
-    write_xml_line(' <group name="Player info">', xml_file, xml_strings)
-    write_xml_line('  <table name="Vitals">', xml_file, xml_strings)
+    write_xml_line(' <group name="Player stats">', xml_file, xml_strings)
+    write_xml_line('  <table name="Bio">', xml_file, xml_strings)
     for name in master_names[0: len(master_names) - num_team_vars]:    
         write_xml_line('   <variable name="' + name + '"/>', xml_file, xml_strings)
     write_xml_line('  </table>', xml_file, xml_strings)
-    write_xml_line('  <table name="Team info">', xml_file, xml_strings)
+    write_xml_line('  <table name="Teams">', xml_file, xml_strings)
     for name in master_names[len(master_names) - num_team_vars: len(master_names)]:
         write_xml_line('   <variable name="' + name + '"/>', xml_file, xml_strings)
     write_xml_line('  </table>', xml_file, xml_strings)
@@ -302,10 +302,11 @@ def write_dict(dict_file):
             values = {}
             for row in all_data:
                 if row[i] == '\\N': continue
+                key = row[i].replace(";", ",")
                 if 'throwing hand' in title or 'batting hand' in title:
-                    values[row[i]] = hand[row[i]]
+                    values[key] = hand[key]
                 else:
-                    values[row[i]] = row[i]
+                    values[key] = key
             range_str = ''            
             for key in values:
                 if not range_str == '': range_str = range_str + ';'
