@@ -33,7 +33,7 @@ def init_dataset(output_folder):
     for line in lines:
         line = line.strip()
         if line == "project.title=":
-            line = line + "Lahman's Baseball Database " + year
+            line = line + "Lahman`s Baseball Database " + year
         project_file.write(line + '\n') 
     template_file.close()
     project_file.close()
